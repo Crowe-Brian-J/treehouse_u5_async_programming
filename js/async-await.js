@@ -4,9 +4,18 @@ const peopleList = document.getElementById('people')
 const btn = document.querySelector('button')
 
 // Handle all fetch requests
+const getJSON = async (url) => {
+  try {
+    const response = await fetch(url)
+    //I keep forgetting to invoke the .json() method
+    return await response.json()
+  } catch (err) {
+    throw err
+  }
+}
+
 const getPeopleInSpace = async (url) => {
-  const peopleResponse = await fetch(url)
-  const peopleJSON = await peopleResponse.json()
+  const peopleJSON = await getJSON(url)
 
   //map over people
   const profiles = peopleJSON.people.map(async (person) => {
@@ -14,10 +23,9 @@ const getPeopleInSpace = async (url) => {
     const craft = person.craft
     const wikiUrlFinal = person.wiki ? person.wiki : person.name
 
-    const profileResponse = await fetch(
+    const profileJSON = await getJSON(
       wikiUrl + encodeURIComponent(wikiUrlFinal)
     )
-    const profileJSON = await profileResponse.json()
 
     return { ...profileJSON, craft, perName }
   })
@@ -58,5 +66,9 @@ btn.addEventListener('click', (e) => {
 
   getPeopleInSpace(astrosUrl)
     .then(generateHTML)
+    .catch((e) => {
+      peopleList.innerHTML = '<h3>Something went wrong!</h3>'
+      console.error(e)
+    })
     .finally(() => e.target.remove())
 })
