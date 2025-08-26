@@ -10,7 +10,7 @@
     { "craft": "ISS", "name": "Butch Wilmore" },
     { "craft": "ISS", "name": "Sunita Williams" },
     { "craft": "Tiangong", "name": "Li Guangsu" },
-    { "craft": "Tiangong", "name": "Li Cong" },
+    { "craft": "Tiangong", "name": "Li Cong", "wiki": "Li_Cong_(taikonaut)" },
     { "craft": "Tiangong", "name": "Ye Guangfu" }
   ],
   "number": 12,

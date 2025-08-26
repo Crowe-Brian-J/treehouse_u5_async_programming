@@ -16,6 +16,17 @@ const getJSON = (url, callback) => {
   xhr.send()
 }
 
+//map over all astronauts
+const getProfiles = (json) => {
+  json.people.map((person) => {
+    if (person.wiki) {
+      getJSON(wikiUrl + person.wiki, generateHTML)
+    } else {
+      getJSON(wikiUrl + person.name, generateHTML)
+    }
+  })
+}
+
 // Generate the markup for each profile
 const generateHTML = (data) => {
   const section = document.createElement('section')
@@ -40,15 +51,7 @@ const generateHTML = (data) => {
   }
 }
 
-btn.addEventListener('click', () => {
-  // Clear previous results
-  peopleList.innerHTML = ''
-
-  // Step 1: Get astronaut list from astros.json
-  getJSON(astrosUrl, (json) => {
-    json.people.forEach((person) => {
-      // Step 2: For each astronaut, fetch their Wikipedia summary
-      getJSON(wikiUrl + encodeURIComponent(person.name), generateHTML)
-    })
-  })
+btn.addEventListener('click', (e) => {
+  getJSON(astrosUrl, getProfiles)
+  e.target.remove()
 })
