@@ -62,9 +62,14 @@ const generateHTML = (data) => {
 }
 
 btn.addEventListener('click', (e) => {
+  e.target.textContent = 'Loading...'
+
   getJSON(astrosUrl)
     .then(getProfiles)
     .then(generateHTML)
-    .catch((err) => console.log(err))
-  e.target.remove()
+    .catch((err) => {
+      peopleList.innerHTML = '<h3>Something went wrong!</h3>'
+      console.log(err)
+    })
+    .finally(() => e.target.remove())
 })
