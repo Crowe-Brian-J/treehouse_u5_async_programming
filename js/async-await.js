@@ -53,11 +53,10 @@ const generateHTML = (data) => {
   })
 }
 
-btn.addEventListener('click', async (e) => {
+btn.addEventListener('click', (e) => {
   e.target.textContent = 'Loading...'
 
-  const astros = await getPeopleInSpace(astrosUrl)
-  generateHTML(astros)
-
-  e.target.remove()
+  getPeopleInSpace(astrosUrl)
+    .then(generateHTML)
+    .finally(() => e.target.remove())
 })
