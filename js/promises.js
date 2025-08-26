@@ -4,7 +4,7 @@ const peopleList = document.getElementById('people')
 const btn = document.querySelector('button')
 
 // Make an AJAX request
-const getJSON = (url) => {
+/* const getJSON = (url) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     xhr.open('GET', url)
@@ -21,15 +21,19 @@ const getJSON = (url) => {
     }
     xhr.send()
   })
-}
+} */
 
 //map over all astronauts
 const getProfiles = (json) => {
   const profiles = json.people.map((person) => {
     if (person.wiki) {
-      return getJSON(wikiUrl + person.wiki, generateHTML)
+      return fetch(wikiUrl + person.wiki, generateHTML).then((response) =>
+        response.json()
+      )
     } else {
-      return getJSON(wikiUrl + person.name, generateHTML)
+      return fetch(wikiUrl + person.name, generateHTML).then((response) =>
+        response.json()
+      )
     }
   })
   return Promise.all(profiles)
@@ -64,7 +68,8 @@ const generateHTML = (data) => {
 btn.addEventListener('click', (e) => {
   e.target.textContent = 'Loading...'
 
-  getJSON(astrosUrl)
+  fetch(astrosUrl)
+    .then((response) => response.json())
     .then(getProfiles)
     .then(generateHTML)
     .catch((err) => {
