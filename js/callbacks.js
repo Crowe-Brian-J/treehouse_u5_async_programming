@@ -1,16 +1,16 @@
-const astrosUrl = 'http://api.open-notify.org/astros.json'
+const astrosUrl = 'astros.json'
 const wikiUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/'
 const peopleList = document.getElementById('people')
 const btn = document.querySelector('button')
 
 // Make an AJAX request
-const getJSON = (url) => {
+const getJSON = (url, callback) => {
   const xhr = new XMLHttpRequest()
   xhr.open('GET', url)
   xhr.onload = () => {
     if (xhr.status === 200) {
       let data = JSON.parse(xhr.responseText)
-      console.log(data)
+      return callback(data)
     }
   }
   xhr.send()
@@ -39,5 +39,5 @@ const generateHTML = (data) => {
 }
 
 btn.addEventListener('click', () => {
-  return getJSON(astrosUrl)
+  return getJSON(astrosUrl, generateHTML)
 })
