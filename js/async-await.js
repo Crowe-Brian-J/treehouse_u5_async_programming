@@ -6,7 +6,7 @@ const btn = document.querySelector('button')
 // Handle all fetch requests
 
 // Generate the markup for each profile
-function generateHTML(data) {
+const generateHTML = (data) => {
   data.map((person) => {
     const section = document.createElement('section')
     peopleList.appendChild(section)

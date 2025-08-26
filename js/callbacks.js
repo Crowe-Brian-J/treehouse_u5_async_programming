@@ -4,7 +4,7 @@ const peopleList = document.getElementById('people')
 const btn = document.querySelector('button')
 
 // Make an AJAX request
-function getJSON(url) {
+const getJSON = (url) => {
   const xhr = new XMLHttpRequest()
   xhr.open('GET', url)
   xhr.onload = () => {
@@ -17,7 +17,7 @@ function getJSON(url) {
 }
 
 // Generate the markup for each profile
-function generateHTML(data) {
+const generateHTML = (data) => {
   const section = document.createElement('section')
   peopleList.appendChild(section)
   // Check if request returns a 'standard' page from Wiki
