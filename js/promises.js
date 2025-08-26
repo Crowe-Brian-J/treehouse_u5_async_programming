@@ -3,64 +3,45 @@ const wikiUrl = 'https://en.wikipedia.org/api/rest_v1/page/summary/'
 const peopleList = document.getElementById('people')
 const btn = document.querySelector('button')
 
-// Make an AJAX request
-/* const getJSON = (url) => {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
-    xhr.open('GET', url)
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        let data = JSON.parse(xhr.responseText)
-        resolve(data)
-      } else {
-        reject(Error(xhr.statusText))
-      }
-    }
-    xhr.onerror = () => {
-      reject(Error('A network error occurred.'))
-    }
-    xhr.send()
-  })
-} */
-
 //map over all astronauts
 const getProfiles = (json) => {
   const profiles = json.people.map((person) => {
-    if (person.wiki) {
-      return fetch(wikiUrl + person.wiki, generateHTML).then((response) =>
-        response.json()
-      )
-    } else {
-      return fetch(wikiUrl + person.name, generateHTML).then((response) =>
-        response.json()
-      )
-    }
+    const perName = person.name
+    const craft = person.craft
+    const wikiUrlFinal = person.wiki ? person.wiki : person.name
+
+    return fetch(wikiUrl + encodeURIComponent(wikiUrlFinal))
+      .then((response) => response.json())
+      .then((profile) => ({ ...profile, craft, perName }))
+      .catch((err) => console.log('Error Fetching Wiki: ', err))
   })
   return Promise.all(profiles)
 }
 
 // Generate the markup for each profile
 const generateHTML = (data) => {
-  data.map((person) => {
+  data.forEach((person) => {
     const section = document.createElement('section')
     peopleList.appendChild(section)
-    // Check if request returns a 'standard' page from Wiki
+
     if (person.type === 'standard') {
       section.innerHTML = `
-      <img src="${person.thumbnail.source || 'img/profile.jpg'}" alt="${
+        <img src="${person.thumbnail?.source || 'img/profile.jpg'}" alt="${
         person.title
       }">
-      <h2>${person.title}</h2>
-      <p>${person.description}</p>
-      <p>${person.extract}</p>
-    `
+        <span>${person.craft || ''}</span>
+        <h2>${person.perName || person.title}</h2>
+        <p>${person.description || ''}</p>
+        <p>${person.extract || ''}</p>
+      `
     } else {
       section.innerHTML = `
-      <img src="img/profile.jpg" alt="ocean clouds seen from space">
-      <h2>${person.title}</h2>
-      <p>Results unavailable for ${person.title}</p>
-      ${person.extract_html || ''}
-    `
+        <img src="img/profile.jpg" alt="ocean clouds seen from space">
+        <span>${person.craft || ''}</span>
+        <h2>${person.perName || person.title}</h2>
+        <p>Results unavailable for ${person.title}</p>
+        ${person.extract_html || ''}
+      `
     }
   })
 }
