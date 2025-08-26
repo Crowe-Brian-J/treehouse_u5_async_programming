@@ -23,7 +23,9 @@ const generateHTML = (data) => {
   // Check if request returns a 'standard' page from Wiki
   if (data.type === 'standard') {
     section.innerHTML = `
-      <img src=${data.thumbnail.source}>
+      <img src="${data.thumbnail.source || 'img/profile.jpg'}" alt="${
+      data.title
+    }">
       <h2>${data.title}</h2>
       <p>${data.description}</p>
       <p>${data.extract}</p>
@@ -33,11 +35,20 @@ const generateHTML = (data) => {
       <img src="img/profile.jpg" alt="ocean clouds seen from space">
       <h2>${data.title}</h2>
       <p>Results unavailable for ${data.title}</p>
-      ${data.extract_html}
+      ${data.extract_html || ''}
     `
   }
 }
 
 btn.addEventListener('click', () => {
-  return getJSON(astrosUrl, generateHTML)
+  // Clear previous results
+  peopleList.innerHTML = ''
+
+  // Step 1: Get astronaut list from astros.json
+  getJSON(astrosUrl, (json) => {
+    json.people.forEach((person) => {
+      // Step 2: For each astronaut, fetch their Wikipedia summary
+      getJSON(wikiUrl + encodeURIComponent(person.name), generateHTML)
+    })
+  })
 })
