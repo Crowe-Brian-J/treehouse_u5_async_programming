@@ -37,3 +37,7 @@ const generateHTML = (data) => {
     `
   }
 }
+
+btn.addEventListener('click', () => {
+  return getJSON(astrosUrl)
+})
